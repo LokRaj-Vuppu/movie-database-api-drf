@@ -12,7 +12,7 @@ router.register('stream', StreamPlatformViewSet, basename='streamplatform')
 
 urlpatterns = [
     path('list/', WatchListAV.as_view(), name='movie-list'),
-    path('<int:pk>', WatchDetailsAV.as_view(), name='movie-details'),
+    path('<int:pk>/', WatchDetailsAV.as_view(), name='movie-details'),
     path('list2/', WatchListGV.as_view(), name='movie-list2'),
 
     path('', include(router.urls)),

@@ -15,6 +15,26 @@ from watchlist_app.api.serializers import WatchListSerializer, StreamPlatformSer
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from watchlist_app.api.throttling import StreamPlatformThrottle
 
+import logging
+
+# logger = logging.getLogger('django')
+
+
+logger = logging.getLogger('django')
+# logger.setLevel(logging.DEBUG)
+
+# formatter = logging.Formatter('%(levelname)s:%(asctime)s:%(name)s:%(message)s')
+
+# file_handler = logging.FileHandler('logs/sample.log')
+# file_handler.setLevel(logging.ERROR)
+# file_handler.setFormatter(formatter)
+
+# stream_handler = logging.StreamHandler()
+# stream_handler.setFormatter(formatter)
+
+# logger.addHandler(file_handler)
+# logger.addHandler(stream_handler)
+
 # Class based views
 
 class WatchListGV(generics.ListAPIView):
@@ -140,6 +160,7 @@ class WatchListAV(APIView):
     def get(self, request):
         movies = WatchList.objects.all()
         serializer = WatchListSerializer(movies, many=True)
+        logger.debug(serializer.data)
         return Response(serializer.data)
 
 
@@ -147,8 +168,10 @@ class WatchListAV(APIView):
         serializer = WatchListSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            logger.info(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            logger.error(serializer.errors)
             return Response(serializer.errors)
 
 
@@ -160,9 +183,12 @@ class WatchDetailsAV(APIView):
             movie = WatchList.objects.get(pk=pk)
         except WatchList.DoesNotExist:
             content = {'error': 'Movie not found'}
+            logger.error(content)
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         
         serializer = WatchListSerializer(movie)
+        logger.info('All watchlist names')
+        logger.info(serializer.data)
         return Response(serializer.data)
 
 
@@ -171,8 +197,10 @@ class WatchDetailsAV(APIView):
         serializer = WatchListSerializer(movie, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            logger.info(serializer.data)
             return Response(serializer.data)
         else:
+            logger.error(serializer.errors)
             return Response(serializer.errors)
 
 
