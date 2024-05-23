@@ -27,4 +27,4 @@ jobs:
         pip install -r watchmate/requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python watchmate/manage.py test
